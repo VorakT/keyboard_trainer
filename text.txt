@@ -1,0 +1,2 @@
+This is training text
+It even supports multiple lines and long lines too
