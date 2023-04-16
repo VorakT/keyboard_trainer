@@ -25,6 +25,9 @@ class GameState:
         self.press = 1
 
     def next_position(self):
+        """
+        Just goes to next position in text
+        """
         self.position.index += 1
         self.amount_of_characters += 1
         if self.position.index == len(self.text[self.position.line][self.position.word]):
@@ -35,6 +38,11 @@ class GameState:
                 self.position.word = 0
 
     def add_observer(self, observer):
+        """
+        adds observers to tell them when correct or incorrect input happens,
+        in this program's case text sprite inherits
+        observer's interface
+        """
         self.observers.append(observer)
 
     def correct_invoke_observers(self, keyboard_input):
@@ -46,6 +54,9 @@ class GameState:
             observer.incorrect_invoke(keyboard_input, self.position)
 
     def check_correct_input(self, keyboard_input):
+        """
+        Checks input and tells all observers and goes to next position, if needed
+        """
         self.press += 1
         if keyboard_input == self.text[self.position.line][self.position.word][self.position.index]:
             self.correct_invoke_observers(keyboard_input)
@@ -56,6 +67,9 @@ class GameState:
         return False
 
     def check_text_end(self):
+        """
+        Checks if the game has to end
+        """
         end = (self.position.line >= len(self.text))
         if end:
             self.active = False
@@ -72,7 +86,13 @@ class GameState:
         return self.timer
 
     def get_wpm(self):
-        return round(self.amount_of_characters / 5 / ((self.get_time() - self.begin) / 60))  # I count a word as 5 symbols
+        """
+        I count a sword as 5 symbols
+        """
+        return round(self.amount_of_characters / 5 / ((self.get_time() - self.begin) / 60))
 
     def get_percent(self):
+        """
+        returns percentage of right presses
+        """
         return round(100 - self.errors / self.press * 100)

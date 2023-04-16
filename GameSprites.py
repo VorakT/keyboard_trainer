@@ -12,6 +12,10 @@ class Observer:
 
 
 def join_text_surfaces_in_one_line(list_of_surfaces):
+    """
+    Takes list of text surfaces of the same height and all the colors except for green
+    and returns one surface with all of them in line
+    """
     width = 0
     for surf in list_of_surfaces:
         width += surf.get_width()
@@ -26,6 +30,11 @@ def join_text_surfaces_in_one_line(list_of_surfaces):
 
 
 def make_text_surf(text):
+    """
+    Takes list of lists of surfaces, where each list is different line by design,
+     and then transforms all that to surface with line breaks for text to fit in WIDTH.
+     Word surfaces should be of one height in each line and shouldn't be green
+    """
     width = 0
     height = 0
     lines = []
@@ -61,9 +70,14 @@ def get_word_surf(word, pyfont, color):
 
 
 def color_incorrect_letter(word, index, pyfont):
-    black_surf = pyfont.render(word[:index], False, THECOLORS['black'])
-    red_surf = pyfont.render(word[index:index + 1], False, THECOLORS['red'])
-    gray_surf = pyfont.render(word[index + 1:], False, THECOLORS['gray'])
+    """
+    Takes string, index and pygame font and returns
+    surface with letter colored red on index,
+    black letters before index and gray after
+    """
+    black_surf = get_word_surf(word[:index], pyfont, THECOLORS['black'])
+    red_surf = get_word_surf(word[index:index + 1], pyfont, THECOLORS['red'])
+    gray_surf = get_word_surf(word[index + 1:], pyfont, THECOLORS['gray'])
     height = black_surf.get_height()
     width = black_surf.get_width() + red_surf.get_width() + gray_surf.get_width()
     result_surf = pygame.Surface((width, height))
@@ -76,8 +90,13 @@ def color_incorrect_letter(word, index, pyfont):
 
 
 def color_correct_letter(word, index, pyfont):
-    black_surf = pyfont.render(word[:index + 1], False, THECOLORS['black'])
-    gray_surf = pyfont.render(word[index + 1:], False, THECOLORS['gray'])
+    """
+    Takes string, index and pygame font and returns
+    surface with letter colored
+    black before index and on index, and gray after
+    """
+    black_surf = get_word_surf(word[:index + 1], pyfont, THECOLORS['black'])
+    gray_surf = get_word_surf(word[index + 1:], pyfont, THECOLORS['gray'])
     height = black_surf.get_height()
     width = black_surf.get_width() + gray_surf.get_width()
     result_surf = pygame.Surface((width, height))
@@ -103,15 +122,24 @@ class TestText(pygame.sprite.Sprite, Observer):
         self.update_image()
 
     def update_image(self):
+        """
+        Makes sprite from text_surf attribute
+        """
         self.image = make_text_surf(self.text_surf)
         self.rect = self.image.get_rect()
         self.rect.center = (WIDTH / 2, HEIGHT / 2)
 
     def correct_invoke(self, keyboard_input, pos):
+        """
+        Changes text according to position of correct letter
+        """
         self.text_surf[pos.line][pos.word] = color_correct_letter(self.text[pos.line][pos.word], pos.index, self.font)
         self.update_image()
 
     def incorrect_invoke(self, keyboard_input, pos):
+        """
+        Changes text according to position of incorrect letter
+        """
         self.text_surf[pos.line][pos.word] = color_incorrect_letter(self.text[pos.line][pos.word], pos.index, self.font)
         self.update_image()
 
@@ -128,6 +156,9 @@ class WpmText(pygame.sprite.Sprite):
         self.rect.center = (WIDTH / 2, HEIGHT / 4)
         
     def update(self, wpm, percent):
+        """
+        Updates surface based on given wpm and percent
+        """
         super().update()
         self.text[0][1] = str(wpm)
         self.text[1][0] = str(percent)

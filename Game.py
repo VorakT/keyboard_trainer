@@ -11,6 +11,10 @@ class Game:
         self.state = GameState()
 
     def run(self):
+        '''
+        Main function, that initializes sprites and then handles
+        input using GameState
+        '''
         pygame.init()
         screen = pygame.display.set_mode((WIDTH, HEIGHT))
         clock = pygame.time.Clock()
